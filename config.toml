@@ -1,0 +1,13 @@
+# Project Configuration
+[project]
+name = "flight_numbers"
+description = "Data analysis pipeline for customer behavior"
+authors = ["Kevin Havis"]
+
+[paths]
+data_dir = "data/"
+raw_data = "${paths.data_dir}/raw"
+processed_data = "${paths.data_dir}/processed"
+innova_url = 'https://www.innovadiscs.com/disc-golf-discs/disc-comparison/'
+innova_table = 'disc-comparison'
+pdga_url = 'https://www.pdga.com/technical-standards/equipment-certification/discs/export'
