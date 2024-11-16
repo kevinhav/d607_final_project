@@ -4,12 +4,13 @@ import requests
 from bs4 import BeautifulSoup
 import tomli
 import re
+from io import StringIO
 
 with open("config.toml", "rb") as f:
     config = tomli.load(f)
 
 
-def get_innova_data(url=config['innova_url'], table_id=config['innova_table']):
+def get_innova_data(url=config['paths']['innova_url'], table_id=config['paths']['innova_table']):
     """
     Scrape an HTML table by its ID from a given URL and convert it into a Pandas DataFrame.
     
@@ -46,11 +47,18 @@ def get_innova_data(url=config['innova_url'], table_id=config['innova_table']):
         print(f"An error occurred: {e}")
         return None
 
-def get_pdga_data(url=config['pdga_url']):
+def get_pdga_data(url=config['paths']['pdga_url']):
     """
     Read PDGA disc data from their CSV export URL into a pandas dataframe
     """
-    return pd.read_csv(url)
+    header = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+    }
+    req = requests.get(url, headers=header)
+    data = StringIO(req.text)
+
+    return  pd.read_csv(data)
+
 
 def normalize_column_names(df):
     """
