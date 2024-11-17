@@ -60,53 +60,41 @@ def get_pdga_data(url=config['paths']['pdga_url']):
     return  pd.read_csv(data)
 
 
-def normalize_column_names(df):
+def clean_innova_data(innova_df):
     """
-    Normalize the column names (headers) of a Pandas DataFrame by making them lowercase,
-    removing whitespaces, special characters, and "cm" (case-insensitive) only if it's
-    found at the end of the column name.
+    Drop uncessary columns and clean up column names for Innova disc data
+    """
+    innova_df.drop(columns='ABBR.', inplace=True)
+    innova_df.rename(columns=str.lower, inplace=True)
+
+    return innova_df
+
+def clean_pdga_data(pdga_df):
     
-    Parameters:
-        df (pd.DataFrame): The input DataFrame with potentially non-standard column names.
-        
-    Returns:
-        pd.DataFrame: A new DataFrame with normalized column names.
+    pdga_df_clean = pdga_df.rename(columns=lambda x: x.lower().replace(' ', '_'))
+
+    return pdga_df_clean
+
+def create_processed_data(innova_df, pdga_df):
     """
-    # Define a function to clean and normalize a single column name
-    def clean_column_name(column_name):
-        # Remove special characters and replace spaces with underscores
-        cleaned_name = re.sub(r'[^a-zA-Z0-9_ ]', '', column_name)
-        # Convert to lowercase
-        cleaned_name = cleaned_name.lower()
-        # Remove "cm" (case-insensitive) only if it's at the end of the string
-        cleaned_name = re.sub(r'cm$', '', cleaned_name)
-        # Remove "gr" (case-insensitive) only if it's at the end of the string
-        cleaned_name = re.sub(r'gr$', '', cleaned_name)
-        # Remove "kg" (case-insensitive) only if it's at the end of the string
-        cleaned_name = re.sub(r'kg$', '', cleaned_name)
-        # Remove extra spaces
-        cleaned_name = cleaned_name.strip().replace(' ', '_')
-        return cleaned_name
-
-    # Apply the cleaning function to all column names
-    normalized_columns = [clean_column_name(col) for col in df.columns]
-
-    # Rename the DataFrame columns with the normalized names
-    df.columns = normalized_columns
-
-    return df
-
-# TODO 
-
-def clean_innova_data():
-    ...
-
-def clean_pdga_data():
-    ...
-
-def create_processed_data():
-    ...
+    Join Innova and PDGA data as the final processed dataset
+    """
+    return pd.merge(how='left', left=innova_df, right=pdga_df, left_on='disc', right_on='disc_model')
 
 def cache_processed_data():
     # TODO feather or parquet?
     ...
+
+def get_data():
+    """
+    Load Innova and PDGA data
+    """
+
+    innova_df = get_innova_data()
+    innova_df = clean_innova_data(innova_df)
+
+
+    pdga_df = get_pdga_data()
+    pdga_df = clean_pdga_data(pdga_df)
+
+    return create_processed_data(innova_df, pdga_df)
