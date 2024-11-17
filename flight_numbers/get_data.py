@@ -77,9 +77,10 @@ def clean_pdga_data(pdga_df):
 
 def create_processed_data(innova_df, pdga_df):
     """
-    Join Innova and PDGA data as the final processed dataset
+    Join Innova and PDGA data as the final processed dataset, dropping nulls
     """
-    return pd.merge(how='left', left=innova_df, right=pdga_df, left_on='disc', right_on='disc_model')
+    return  pd.merge(how='left', left=innova_df, right=pdga_df, left_on='disc', right_on='disc_model')
+
 
 def cache_processed_data():
     # TODO feather or parquet?
@@ -87,7 +88,7 @@ def cache_processed_data():
 
 def get_data():
     """
-    Load Innova and PDGA data
+    Load processed and combined Innova and PDGA data
     """
 
     innova_df = get_innova_data()
