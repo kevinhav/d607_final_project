@@ -1,4 +1,5 @@
 import pandas as pd
+from pandas import DataFrame
 from pathlib import Path
 import requests
 from bs4 import BeautifulSoup
@@ -10,14 +11,16 @@ with open("config.toml", "rb") as f:
     config = tomli.load(f)
 
 
-def get_innova_data(url=config['paths']['innova_url'], table_id=config['paths']['innova_table']):
+def get_innova_data(
+    url=config["paths"]["innova_url"], table_id=config["paths"]["innova_table"]
+) -> DataFrame:
     """
     Scrape an HTML table by its ID from a given URL and convert it into a Pandas DataFrame.
-    
+
     Parameters:
         url (str): The URL containing the HTML table.
         table_id (str): The ID of the HTML table to scrape.
-        
+
     Returns:
         pd.DataFrame or None: A Pandas DataFrame containing the table data,
         or None if the table with the specified ID is not found.
@@ -26,13 +29,13 @@ def get_innova_data(url=config['paths']['innova_url'], table_id=config['paths'][
         # Send an HTTP GET request to fetch the HTML content
         response = requests.get(url)
         response.raise_for_status()  # Raise an exception for HTTP errors
-        
+
         # Parse the HTML content with BeautifulSoup
-        soup = BeautifulSoup(response.text, 'html.parser')
-        
+        soup = BeautifulSoup(response.text, "html.parser")
+
         # Find the table with the specified ID
-        table = soup.find('table', {'id': table_id})
-        
+        table = soup.find("table", {"id": table_id})
+
         if table:
             # Convert the table to a Pandas DataFrame
             df = pd.read_html(str(table))[0]
@@ -47,7 +50,8 @@ def get_innova_data(url=config['paths']['innova_url'], table_id=config['paths'][
         print(f"An error occurred: {e}")
         return None
 
-def get_pdga_data(url=config['paths']['pdga_url']):
+
+def get_pdga_data(url=config["paths"]["pdga_url"]) -> DataFrame:
     """
     Read PDGA disc data from their CSV export URL into a pandas dataframe
     """
@@ -57,43 +61,52 @@ def get_pdga_data(url=config['paths']['pdga_url']):
     req = requests.get(url, headers=header)
     data = StringIO(req.text)
 
-    return  pd.read_csv(data)
+    return pd.read_csv(data)
 
 
-def clean_innova_data(innova_df):
+def clean_innova_data(innova_df) -> DataFrame:
     """
     Drop uncessary columns and clean up column names for Innova disc data
     """
-    innova_df.drop(columns='ABBR.', inplace=True)
+    innova_df.drop(columns="ABBR.", inplace=True)
     innova_df.rename(columns=str.lower, inplace=True)
 
     return innova_df
 
-def clean_pdga_data(pdga_df):
-    
-    pdga_df_clean = pdga_df.rename(columns=lambda x: x.lower().replace(' ', '_'))
+
+def clean_pdga_data(pdga_df) -> DataFrame:
+
+    pdga_df_clean = pdga_df.rename(columns=lambda x: x.lower().replace(" ", "_"))
 
     return pdga_df_clean
 
-def create_processed_data(innova_df, pdga_df):
+
+def create_processed_data(innova_df, pdga_df) -> DataFrame:
     """
     Join Innova and PDGA data as the final processed dataset, dropping nulls
     """
-    return  pd.merge(how='left', left=innova_df, right=pdga_df, left_on='disc', right_on='disc_model')
+    df = pd.merge(
+        how="left", left=innova_df, right=pdga_df, left_on="disc", right_on="disc_model"
+    )
+
+    # Some discs are missing measurements so we'll ignore them
+    df.dropna(subset="rim_thickness_(cm)", inplace=True)
+
+    return df
 
 
 def cache_processed_data():
     # TODO feather or parquet?
     ...
 
-def get_data():
+
+def get_data() -> DataFrame:
     """
-    Load processed and combined Innova and PDGA data
+    Returns processed and combined Innova and PDGA data
     """
 
     innova_df = get_innova_data()
     innova_df = clean_innova_data(innova_df)
-
 
     pdga_df = get_pdga_data()
     pdga_df = clean_pdga_data(pdga_df)
