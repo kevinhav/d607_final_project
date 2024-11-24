@@ -4,11 +4,10 @@ from pathlib import Path
 import requests
 from bs4 import BeautifulSoup
 import tomli
-import re
 from io import StringIO
-import sys
-import os
 
+# Replace this per your directory
+# Needed to let Quatro render .qmd correctly
 CONFIG_PATH = "/Users/kevinhav/projects/d606_final_project/config.toml"
 
 # TODO figure out how to do relative path with Quarto
@@ -69,7 +68,7 @@ def get_pdga_data(url=config["paths"]["pdga_url"]) -> DataFrame:
     return pd.read_csv(data)
 
 
-def clean_innova_data(innova_df) -> DataFrame:
+def clean_innova_data(innova_df: DataFrame) -> DataFrame:
     """
     Drop uncessary columns and clean up column names for Innova disc data
     """
@@ -79,7 +78,10 @@ def clean_innova_data(innova_df) -> DataFrame:
     return innova_df
 
 
-def clean_pdga_data(pdga_df) -> DataFrame:
+def clean_pdga_data(pdga_df: DataFrame) -> DataFrame:
+    """
+    Drop uncessary columns and clean up column names for Innova disc data
+    """
 
     pdga_df_clean = pdga_df.rename(columns=lambda x: x.lower().replace(" ", "_"))
     pdga_df_clean.drop(
@@ -97,7 +99,7 @@ def clean_pdga_data(pdga_df) -> DataFrame:
     return pdga_df_clean
 
 
-def create_processed_data(innova_df, pdga_df) -> DataFrame:
+def create_processed_data(innova_df: DataFrame, pdga_df: DataFrame) -> DataFrame:
     """
     Join Innova and PDGA data as the final processed dataset, dropping nulls
     """

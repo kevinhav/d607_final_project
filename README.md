@@ -61,7 +61,7 @@ pip install -r requirements.txt
 
 ### Configuration
 
-1. Update `CONFIG_PATH` in `get_data.py` to point to the `config.toml` file. This is a workaround until I can figure out how to get Quattro to play nice with local module imports.
+1. Update `CONFIG_PATH` in `get_data.py` to point to the `config.toml` file. This is a workaround until I can figure out how to get Quarto to play nice with local module imports.
 
 ## Usage
 
