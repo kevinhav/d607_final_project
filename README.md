@@ -4,25 +4,33 @@ This repository contains code and analysis for exploring disc golf flight number
 
 ## Project Overview
 
-[Provide a concise description of your project's goals and key findings]
+In this paper I consider the flying discs used in the sport of disc golf, specifically exploring the relationship between their physical characteristics and the way manufacturers market and classify these discs. Using technical specification and manufacturer data, I find strong correlations between the dimensions of a disc's rim to flight numbers.
+
+See [flight_numbers.html](notebooks/02_presentation/flight_numbers.html) for full analysis.
 
 ## Project Structure
 
 ```
-project_root/
-├── data/               # Data files
-│   ├── raw/           # Original, immutable data
-│   └── processed/     # Cleaned and processed data
-├── notebooks/         # Jupyter notebooks and Quarto documents
-├── src/              # Source code
-│   ├── __init__.py
-│   ├── data/         # Data processing scripts
-│   ├── features/     # Feature engineering code
-│   └── visualization/# Plotting and visualization code
-├── tests/            # Unit tests
-├── requirements.txt  # Project dependencies
-├── config.toml       # Configuration settings
-└── README.md        # Project documentation
+.
+├── README.md
+├── _quarto.yml
+├── config.toml
+├── data
+│   ├── interim
+│   ├── processed
+│   └── raw
+├── docs
+│   ├── pdga-technical-standards_2024-05-08.pdf
+│   └── project_summary.md
+├── flight_numbers
+│   ├── __init__.py
+│   ├── __pycache__
+│   ├── get_data.py
+│   ├── make_plots.py
+│   └── train_models.py
+└── notebooks
+    ├── 01_exploration
+    └── 02_presentation
 ```
 
 ## Setup Instructions
@@ -56,59 +64,24 @@ pip install -r requirements.txt
 
 ### Configuration
 
-1. Copy the example configuration file:
-```bash
-cp config.example.toml config.toml
-```
-
-2. Update `config.toml` with your settings:
-```toml
-[paths]
-data_dir = "data/"
-output_dir = "output/"
-
-[parameters]
-random_seed = 42
-```
+1. Update `CONFIG_PATH` in `get_data.py` to point to the `config.toml` file. This is a workaround until I can figure out how to get Quattro to play nice with local module imports.
 
 ## Usage
 
 ### Data Processing
 
-1. Place raw data in `data/raw/`
-2. Run data processing scripts:
-```bash
-python src/data/process_data.py
-```
+1. Run `get_data()` from `make_data.py` to load the data as a Pandas dataframe
+2. Optionally, write data locally to `/data/`
 
-### Analysis
+### Analysis & Modeling
 
-1. Navigate to the notebooks directory:
-```bash
-cd notebooks
-```
-
-2. Start Jupyter or render Quarto documents:
-```bash
-jupyter lab
-# or
-quarto render analysis.qmd
-```
-
-## Contributing
-
-1. Create a new branch for your feature
-2. Make your changes
-3. Run tests:
-```bash
-python -m pytest
-```
-4. Submit a pull request
+1. Use functions in `train_models.py` to train models
+2. 
 
 ## Contact
 
-[Your Name] - [email/contact information]
+Kevin Havis - kevin.havis@gmail.com
 
 ## License
 
-[Specify your license]
+MIT Open Source - See [LICENSE](LICENSE)

@@ -9,8 +9,10 @@ from io import StringIO
 import sys
 import os
 
+CONFIG_PATH = "/Users/kevinhav/projects/d606_final_project/config.toml"
+
 # TODO figure out how to do relative path with Quarto
-with open("config.toml", "rb") as f:
+with open(CONFIG_PATH, "rb") as f:
     config = tomli.load(f)
 
 

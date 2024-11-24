@@ -13,96 +13,6 @@ execute:
 
 
 ```{python}
-import os
-import sys
-from pathlib import Path
-import tomli  # For reading TOML files. Install with: pip install tomli
-
-class ProjectSetup:
-    """
-    Handles project path setup and configuration file loading
-    """
-    def __init__(self):
-        self.project_root = self.setup_project_path()
-        self.config = self.load_config()
-    
-    def setup_project_path(self):
-        """
-        Set up the Python path to include the project root directory.
-        Returns the project root Path object.
-        """
-        current_file = Path().absolute()
-        
-        # Search upwards for marker files
-        marker_files = ['.git', 'pyproject.toml', 'setup.py', 'requirements.txt', 'config.toml']
-        
-        root_dir = current_file
-        while root_dir.parent != root_dir:  # Stop at filesystem root
-            if any((root_dir / marker).exists() for marker in marker_files):
-                break
-            root_dir = root_dir.parent
-        
-        # Add the project root to sys.path if it's not already there
-        root_str = str(root_dir)
-        if root_str not in sys.path:
-            sys.path.insert(0, root_str)
-            print(f"Added project root to Python path: {root_str}")
-        
-        return root_dir
-    
-    def load_config(self):
-        """
-        Load the config.toml file from various possible locations.
-        Returns the config dictionary.
-        """
-        possible_config_locations = [
-            self.project_root / 'config.toml',
-            self.project_root / 'config' / 'config.toml',
-            self.project_root / 'conf' / 'config.toml',
-            self.project_root / 'settings' / 'config.toml'
-        ]
-        
-        # Print all searched locations for debugging
-        print("\nSearching for config.toml in:")
-        for loc in possible_config_locations:
-            print(f"  {loc}")
-            if loc.exists():
-                print(f"\nFound config.toml at: {loc}")
-                try:
-                    with open(loc, 'rb') as f:
-                        return tomli.load(f)
-                except Exception as e:
-                    print(f"Error loading config file: {e}")
-                    raise
-        
-        # If we get here, we didn't find the config file
-        searched_paths = "\n  ".join(str(p) for p in possible_config_locations)
-        raise FileNotFoundError(
-            f"Could not find config.toml in any of these locations:\n  {searched_paths}\n"
-            f"Current working directory: {os.getcwd()}\n"
-            f"Project root: {self.project_root}"
-        )
-
-# Initialize the project setup
-try:
-    setup = ProjectSetup()
-    PROJECT_ROOT = setup.project_root
-    CONFIG = setup.config
-    
-    # Print debug information
-    print(f"\nProject successfully initialized:")
-    print(f"Current working directory: {os.getcwd()}")
-    print(f"Project root directory: {PROJECT_ROOT}")
-    print("\nPython path:")
-    for p in sys.path:
-        print(f"  {p}")
-    
-except Exception as e:
-    print(f"\nError during project setup: {e}")
-    raise
-```
-
-```{python}
 #| include: false
 
 # See https://github.com/kevinhav/d607_final_project/tree/main/flight_numbers for full code
@@ -112,7 +22,7 @@ import os
 
 # Add the root directory to sys.path
 # TODO figure out how to use relative path with Quarto
-#sys.path.append('/Users/kevinhav/projects/d606_final_project')
+sys.path.append('/Users/kevinhav/projects/d606_final_project')
 
 from flight_numbers import get_data, make_plots
 import seaborn as sns
