@@ -5,17 +5,40 @@ format:
   html:
     code-fold: true
 jupyter: python3
+project:
+  execute-dir: project
 ---
+
+
+```{python}
+#| include: false
+
+# See https://github.com/kevinhav/d607_final_project/tree/main/flight_numbers for full code
+
+import sys
+import os
+
+# Add the root directory to sys.path
+# TODO figure out how to use relative path with Quarto
+sys.path.append('/Users/kevinhav/projects/d606_final_project')
+
+from flight_numbers import get_data, make_plots
+import seaborn as sns
+
+df = get_data.get_data()
+```
 
 ## Abstract
 
-...
+In this paper I consider the flying discs used in the sport of disc golf, specifically exploring the relationship between their physical characteristics and the way manufacturers market and classify these discs. Using technical specification and manufacturer data, I find strong correlations between the dimensions of a disc's rim to flight numbers.
 
 ### Introduction to disc golf's current climate
 
 Disc golf is a relatively new sport that has experienced an explosive growth trajectory in the past couple of decades. Assuming you are familiar with golf, disc golf has a very similar format and scoring mechanic, with the main difference being that instead of clubbing golf balls into a hole, players throw flying discs, similar to Frisbees, into a target, usually in the form of a specific basket.
 
-The modern version of the sport has been around for about half a century, and during the COVID-19 pandemic, experienced an explosion in popularity due to its ease of access, affordability, and low contact. With this sudden trajectory, the disc golf community has found itself flooded with new data, information, and perspectives. In a flood of new money and new players, the community found its current knowledge resources to be insufficient and has been turning to data-driven science to answer its questions.
+The modern version of the sport has been around for about half a century, and during the COVID-19 pandemic, experienced an explosion in popularity due to its ease of access, affordability, and low contact.
+
+With this sudden trajectory, the disc golf community has found itself flooded with new data, information, and perspectives. In a flood of new money and new players, the community found its current knowledge resources to be insufficient and has been turning to data-driven science to answer its questions.
 
 Directly engaging in this exciting and dynamic time, I'd like to take a data science based approach to review one of the most well-known and yet mysterious frameworks in this sport; the disc golf Flight Rating System.
 
@@ -24,9 +47,11 @@ Directly engaging in this exciting and dynamic time, I'd like to take a data sci
 
 One of the unique components to disc golf is its namesake; the discs. Disc golf discs are designed to be thrown much further than your standard Frisbee; elite distance players can throw these discs 600-700+ feet through the air, and even for amateurs, 250' to 400' is not uncommon.
 
-The physics of these discs is very interesting and surprisingly complex; very small differences in the physical attributes, including shape, ratios, and plastic blends of the disc can result in a surprising differences in how two discs fly. One of the original disc golf manufacturers, Innova Disc Golf, invented a system to help try to categorize discs based on these physical attributes, so players could have an idea of how a disc would perform before purchasing. They named this framework the Innova Flight Number System.
+The physics of these discs is very interesting and surprisingly complex; very small differences in the physical attributes, including shape, ratios, and plastic blends of the disc can result in a surprising differences in how two discs fly.
 
- This system categorizes discs by four measures, which are represented numerically on their own disctinct scales.
+One of the original disc golf manufacturers, Innova Disc Golf, invented a system to help try to categorize discs based on these physical attributes, so players could have an idea of how a disc would perform before purchasing. They named this framework the Innova Flight Number System.
+
+This system categorizes discs by four measures, which are represented numerically on their own disctinct scales.
 
 - **Speed**: how fast the disc must be thrown in order to fly as the manufacturer intended
 - **Glide**: how easily the disc is expected to move through the air
@@ -43,58 +68,87 @@ In an attempt to shed some light on how these flights numbers may be determined,
 
 As part of the Professional Disc Golf Association (PDGA)'s process, discs are submitted by manufacturers to be approved according to the PDGA's technical specifications[^1]. These specifications are made available by the PDGA for all approved molds, and includes specific standardized measurements which I have compared against the mold's respective flight numbers.
 
+![](images/pdga_disc_specifications.png){fig-alt="Diagram of disc measurements. Source: PDGA Technical Specifications"}
+
+Below is the combined data, with flight numbers from Innova and physical measurements from the PDGA.
+
 ```{python}
-# full_distplot()
+df.head()
+```
+
+In the below correlation matrix, we can see some clear relationships. We'll explore these further in the following section
+
+Do note the colinearity between these physical measurements; for example, the size of the rim is highly correlated to inner diameter.
+
+```{python}
+#| label: fig-corr-plot
+#| fig-cap: "Disc correlation "
+
+corr_matrix = make_plots.make_correlation_matrix(df)
+
+make_plots.make_correlation_plot(corr_matrix)
 ```
 
 #### Speed
 
-According to the flight number system, Speed represents the velocity at which the disc should be thrown in order to achieve the manufacturer's intended flight, and discs with higher Speed are generally used as distance drivers. Of all the flight number categories, Speed has the largest range, spanning from 1-15
+According to the flight number system, Speed represents the velocity at which the disc should be thrown in order to achieve the manufacturer's intended flight, and discs with higher Speed are generally used as distance drivers. Of all the flight number categories, Speed has the largest range, spanning from 1-14
 
 ```{python}
-# speed_distribution()
+make_plots.make_flight_number_hist(df, 'speed')
 ```
 
 From my analysis, the most clear and straightforward relationship across all characteristics is that of Speed and a disc's rim, specifically the thickness and shape. Intuitively this makes sense, as we can think of the rim of a disc as its "wing", which should play a significant part in aerodynamic characteristics.
 
 ```{python}
-# speed_rim_correlation
+sns.scatterplot(df, x='speed', y='rim_thickness_(cm)')
 ```
+
 
 #### Glide
 
 Of all the flight rating categories, the disc golf community finds Glide to be one of the least informative attributes. Glide is intended to indicate how easily a disc will move through the air, but given we are throwing discs and not shot-put, this is an assumed characteristic.
 
-Notably, Glide seems to be highly correlated with Speed. We can see a similar, albeit less convincing, relationship with rim shape, and the two attributes themselves show a positive correlation.
+Notably, Glide seems to be highly correlated with Speed. We can see a similar, albeit less convincing, relationships in line with those that we saw for Speed as seen in @fig-corr-plot.
 
-
+```{python}
+make_plots.make_stripplot(df, 'glide', 'speed')
+```
 
 #### Turn
 
 On the other hand, perhaps no attribute of a disc is discussed and debated more than Turn and her sister Fade, with their sum generally referred to as Stability.
 
-A disc's flight can be thought of as consisting of two phases; the first is the high spin phase, when the disc is first thrown and has the most kinetic energy, followed by a low spin phase, where the disc begins to lose RPM and succumbs to gravity.
+```{python}
+make_plots.make_stripplot(df, 'turn', 'fade')
+```
 
-Turn describes how a disc behaves during the high spin phase. Considering a typical right handed player throwing a backhand shot on a neutral angle, Turn describes how much the disc will move tangent to its rotation (clockwise in this example), or simply put, how far right it will fly.
+A disc's flight can be thought of as consisting of two phases; the first is the high spin phase, when the disc is first thrown and has the most kinetic energy, followed by a low spin phase, where the disc begins to lose RPM and succumbs to gravity.
+~
+Turn describes how a disc behaves during the high spin phase. Considering a typical right handed player throwing a backhand shot on a neutral angle, Turn indicates how much the disc will move tangent to its rotation (clockwise in this example), or simply put, how far right it will drift during its flight.
+
+From @fig-corr-plot we see that the depth of the rim has the greatest impact on Turn, and perhaps more interestingly, Turn seems to have an inverse relationship with Speed's correlations, meaning discs with higher speed tend to have less turn.
+
+
 
 #### Fade
 
 Fade is the equally important opposite of Turn, and describes the second, lower spin phase of the disc's flight. Given the same right hand backhand throw, a high Fade is intended to describe how the disc will tend to move left and towards the ground.
 
+As expected, we see an opposite relationship between Turn and Fade, in both directionality and strength, as seen in @fig-corr-plot.
+
 ### Other considerations
 
-It is important to note that the data used in this analysis was limited to a single manufacturer, Innova. While Innova is the top selling disc golf company today, and the company that first developed the modern flight number system, these ratings are not standardized for all manufacturers. Significant differences could be observed when applying these same methods to a broader population of molds.
+It is important to note that the data used in this analysis was limited to a single manufacturer, Innova. While Innova is the top selling disc golf company today, in addition to being the company that first developed the modern flight number system, these ratings are not standardized for all manufacturers. Significant differences could be observed when applying these same methods to a broader population of molds.
 
-Additionally, it is well known and accepted that the plastic polymers a disc is made from has significant impacts on a discs characteristics, even those made from the same mold. Environmental conditions, such as altitude and air pressure, can also influence how a disc flies.
-
+Additionally, it is well known and accepted that the plastic polymers a disc is made from has significant impacts on a discs characteristics, even those made from the same mold. Environmental conditions, such as altitude and air pressure, can also influence how a disc flies. There are also physical characteristics that are more difficult to measure that are generally considered relevant, such as the "parting line", or the position between flight plate and rim when the disc is manufactured.
 
 ## Conclusion
 
-While we can see relationships when we consider physical characteristics of a disc, it is not clear that the flight number system can reliably derived from the dimensions of a disc alone, even when considering a single manufacturer.
+We can clearly observe relationships between physical measurements of a disc and the prescribed flight numbers. The dimensions of the rim are especially important to consider when applying this kind of classification system.
 
-Without a controlled, standardized testing environment and rating process, the flight number system is unreliable and poorly suited to describe to a consumer how a disc might fly. If the industry and community's goal is to  continue to develop and grow the sport, it would be well served to invest in a more quantitative system to stanardize its equipment.
+It is important to note that this analysis says nothing of the actual flight patterns one could expect of a given disc. As mentioned, there are too many factors beyond a disc's shape and design that can influence the behavior of a disc in flight.
 
-In short, flight numbers don't matter.
+Without a controlled, standardized testing environment and rating process, the flight number system is unreliable and poorly suited to describe to a consumer how a disc might fly. If the industry and community's goal is to sysmetically describe discs by their flight patterns, it would be well served to invest in a simulation based approach.
 
 
 ### Additional Information

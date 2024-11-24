@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Kevin Havis">
 
-<title>matplotlib demo</title>
+<title>Flight Numbers: An analysis of the disc golf flight number system</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,10 +21,44 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="flight_numbers_files/libs/clipboard/clipboard.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="flight_numbers_files/libs/clipboard/clipboard.min.js"></script>
 <script src="flight_numbers_files/libs/quarto-html/quarto.js"></script>
 <script src="flight_numbers_files/libs/quarto-html/popper.min.js"></script>
 <script src="flight_numbers_files/libs/quarto-html/tippy.umd.min.js"></script>
@@ -33,6 +68,9 @@ ul.task-list li input[type="checkbox"] {
 <script src="flight_numbers_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="flight_numbers_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="flight_numbers_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
 
 </head>
@@ -45,13 +83,19 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">matplotlib demo</h1>
+<h1 class="title">Flight Numbers: An analysis of the disc golf flight number system</h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Kevin Havis </p>
+          </div>
+  </div>
     
   
     
@@ -62,9 +106,310 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>This is a test</p>
+<div id="18a27fcd" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># See https://github.com/kevinhav/d607_final_project/tree/main/flight_numbers for full code</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Add the root directory to sys.path</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co"> figure out how to use relative path with Quarto</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>sys.path.append(<span class="st">'/Users/kevinhav/projects/d606_final_project'</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> flight_numbers <span class="im">import</span> get_data, make_plots</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> get_data.get_data()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>/Users/kevinhav/projects/d606_final_project/flight_numbers/get_data.py:44: FutureWarning: Passing literal html to 'read_html' is deprecated and will be removed in a future version. To read from a literal string, wrap it in a 'StringIO' object.
+  df = pd.read_html(str(table))[0]</code></pre>
+</div>
+</div>
+<section id="abstract" class="level2">
+<h2 class="anchored" data-anchor-id="abstract">Abstract</h2>
+<p>In this paper I consider the flying discs used in the sport of disc golf, specifically exploring the relationship between their physical characteristics and the way manufacturers market and classify these discs. Using technical specification and manufacturer data, I find strong correlations between the dimensions of a disc’s rim to flight numbers.</p>
+<section id="introduction-to-disc-golfs-current-climate" class="level3">
+<h3 class="anchored" data-anchor-id="introduction-to-disc-golfs-current-climate">Introduction to disc golf’s current climate</h3>
+<p>Disc golf is a relatively new sport that has experienced an explosive growth trajectory in the past couple of decades. Assuming you are familiar with golf, disc golf has a very similar format and scoring mechanic, with the main difference being that instead of clubbing golf balls into a hole, players throw flying discs, similar to Frisbees, into a target, usually in the form of a specific basket.</p>
+<p>The modern version of the sport has been around for about half a century, and during the COVID-19 pandemic, experienced an explosion in popularity due to its ease of access, affordability, and low contact.</p>
+<p>With this sudden trajectory, the disc golf community has found itself flooded with new data, information, and perspectives. In a flood of new money and new players, the community found its current knowledge resources to be insufficient and has been turning to data-driven science to answer its questions.</p>
+<p>Directly engaging in this exciting and dynamic time, I’d like to take a data science based approach to review one of the most well-known and yet mysterious frameworks in this sport; the disc golf Flight Rating System.</p>
+</section>
+<section id="flight-numbers-and-their-challenges" class="level3">
+<h3 class="anchored" data-anchor-id="flight-numbers-and-their-challenges">Flight numbers and their challenges</h3>
+<p>One of the unique components to disc golf is its namesake; the discs. Disc golf discs are designed to be thrown much further than your standard Frisbee; elite distance players can throw these discs 600-700+ feet through the air, and even for amateurs, 250’ to 400’ is not uncommon.</p>
+<p>The physics of these discs is very interesting and surprisingly complex; very small differences in the physical attributes, including shape, ratios, and plastic blends of the disc can result in a surprising differences in how two discs fly.</p>
+<p>One of the original disc golf manufacturers, Innova Disc Golf, invented a system to help try to categorize discs based on these physical attributes, so players could have an idea of how a disc would perform before purchasing. They named this framework the Innova Flight Number System.</p>
+<p>This system categorizes discs by four measures, which are represented numerically on their own disctinct scales.</p>
+<ul>
+<li><strong>Speed</strong>: how fast the disc must be thrown in order to fly as the manufacturer intended</li>
+<li><strong>Glide</strong>: how easily the disc is expected to move through the air</li>
+<li><strong>Turn</strong>: the gyroscopic stability of the disc at <em>high</em> speeds (i.e.&nbsp;how the disc acts when first thrown)</li>
+<li><strong>Fade</strong>: the gyroscopic stability of the disc at <em>low</em> speeds (i.e.&nbsp;how the disc acts as it finishes its flight)</li>
+</ul>
+<p>While this system has been widely adopted by the community and other manufacturers as a standard, with every disc expected to have a set of flight numbers, the system is opaque and surrounded by mystery, with many in the community simply decrying the entire framework, expressing “flight numbers don’t matter” as a common idiom.</p>
+<p>A combination of player skill levels, differences in how manufacturers apply the flight number system, and even the plastic polymers that the disc is made from result in a wide range of characteristics from similarly classified discs.</p>
+</section>
+<section id="comparing-the-flight-number-system-to-physical-disc-characteristics" class="level3">
+<h3 class="anchored" data-anchor-id="comparing-the-flight-number-system-to-physical-disc-characteristics">Comparing the flight number system to physical disc characteristics</h3>
+<p>In an attempt to shed some light on how these flights numbers may be determined, I have compared the rating numbers for Innova’s most popular disc molds against their physical characteristics. My goal was to see if there was some obvious relationship that could potentially explain the high degree of variability we see in these calssifications.</p>
+<p>As part of the Professional Disc Golf Association (PDGA)’s process, discs are submitted by manufacturers to be approved according to the PDGA’s technical specifications<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. These specifications are made available by the PDGA for all approved molds, and includes specific standardized measurements which I have compared against the mold’s respective flight numbers.</p>
+<p><img src="images/pdga_disc_specifications.png" class="img-fluid" alt="Diagram of disc measurements. Source: PDGA Technical Specifications"></p>
+<p>Below is the combined data, with flight numbers from Innova and physical measurements from the PDGA.</p>
+<div id="53cf507a" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<div>
 
-</main>
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">disc</th>
+<th data-quarto-table-cell-role="th">speed</th>
+<th data-quarto-table-cell-role="th">glide</th>
+<th data-quarto-table-cell-role="th">turn</th>
+<th data-quarto-table-cell-role="th">fade</th>
+<th data-quarto-table-cell-role="th">manufacturer_/_distributor</th>
+<th data-quarto-table-cell-role="th">disc_model</th>
+<th data-quarto-table-cell-role="th">diameter_(cm)</th>
+<th data-quarto-table-cell-role="th">height_(cm)</th>
+<th data-quarto-table-cell-role="th">rim_depth_(cm)</th>
+<th data-quarto-table-cell-role="th">inside_rim_diameter_(cm)</th>
+<th data-quarto-table-cell-role="th">rim_thickness_(cm)</th>
+<th data-quarto-table-cell-role="th">rim_depth_/_diameter_ratio_(%)</th>
+<th data-quarto-table-cell-role="th">rim_configuration</th>
+<th data-quarto-table-cell-role="th">flexibility_(kg)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>Aero</td>
+<td>3.0</td>
+<td>6</td>
+<td>0</td>
+<td>0.0</td>
+<td>Innova Champion Discs</td>
+<td>Aero</td>
+<td>21.7</td>
+<td>2.5</td>
+<td>1.3</td>
+<td>19.6</td>
+<td>1.0</td>
+<td>6.0</td>
+<td>43.75</td>
+<td>8.16</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>Alien</td>
+<td>4.0</td>
+<td>2</td>
+<td>0</td>
+<td>1.0</td>
+<td>Innova Champion Discs</td>
+<td>Alien</td>
+<td>21.5</td>
+<td>2.5</td>
+<td>1.5</td>
+<td>20.3</td>
+<td>0.6</td>
+<td>7.0</td>
+<td>82.00</td>
+<td>3.30</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>Animal</td>
+<td>2.0</td>
+<td>1</td>
+<td>0</td>
+<td>1.0</td>
+<td>Innova Champion Discs</td>
+<td>Animal</td>
+<td>21.2</td>
+<td>2.1</td>
+<td>1.3</td>
+<td>19.2</td>
+<td>1.0</td>
+<td>6.1</td>
+<td>64.00</td>
+<td>9.66</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>Ape</td>
+<td>13.0</td>
+<td>5</td>
+<td>0</td>
+<td>4.0</td>
+<td>Innova Champion Discs</td>
+<td>Ape</td>
+<td>21.1</td>
+<td>1.5</td>
+<td>1.2</td>
+<td>16.2</td>
+<td>2.4</td>
+<td>5.7</td>
+<td>27.75</td>
+<td>12.13</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>Archangel</td>
+<td>8.0</td>
+<td>6</td>
+<td>-4</td>
+<td>1.0</td>
+<td>Innova Champion Discs</td>
+<td>Archangel</td>
+<td>21.1</td>
+<td>1.9</td>
+<td>1.4</td>
+<td>17.3</td>
+<td>1.8</td>
+<td>7.1</td>
+<td>31.25</td>
+<td>9.19</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>In the below correlation matrix, we can see some clear relationships. We’ll explore these further in the following section</p>
+<p>Do note the colinearity between these physical measurements; for example, the size of the rim is highly correlated to inner diameter.</p>
+<div id="cell-fig-corr-plot" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>corr_matrix <span class="op">=</span> make_plots.make_correlation_matrix(df)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>make_plots.make_correlation_plot(corr_matrix)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-corr-plot" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-corr-plot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="flight_numbers_files/figure-html/fig-corr-plot-output-1.png" width="740" height="431" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-corr-plot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Disc correlation
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<section id="speed" class="level4">
+<h4 class="anchored" data-anchor-id="speed">Speed</h4>
+<p>According to the flight number system, Speed represents the velocity at which the disc should be thrown in order to achieve the manufacturer’s intended flight, and discs with higher Speed are generally used as distance drivers. Of all the flight number categories, Speed has the largest range, spanning from 1-14</p>
+<div id="82bff415" class="cell" data-execution_count="4">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>make_plots.make_flight_number_hist(df, <span class="st">'speed'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<pre><code>Text(0.0, 1.0, 'Distribution of discs by Speed')</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="flight_numbers_files/figure-html/cell-5-output-2.png" width="585" height="449" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>From my analysis, the most clear and straightforward relationship across all characteristics is that of Speed and a disc’s rim, specifically the thickness and shape. Intuitively this makes sense, as we can think of the rim of a disc as its “wing”, which should play a significant part in aerodynamic characteristics.</p>
+<div id="702df229" class="cell" data-execution_count="5">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>sns.scatterplot(df, x<span class="op">=</span><span class="st">'speed'</span>, y<span class="op">=</span><span class="st">'rim_thickness_(cm)'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="flight_numbers_files/figure-html/cell-6-output-1.png" width="597" height="429" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="glide" class="level4">
+<h4 class="anchored" data-anchor-id="glide">Glide</h4>
+<p>Of all the flight rating categories, the disc golf community finds Glide to be one of the least informative attributes. Glide is intended to indicate how easily a disc will move through the air, but given we are throwing discs and not shot-put, this is an assumed characteristic.</p>
+<p>Notably, Glide seems to be highly correlated with Speed. We can see a similar, albeit less convincing, relationships in line with those that we saw for Speed as seen in <a href="#fig-corr-plot" class="quarto-xref">Figure&nbsp;1</a>.</p>
+<div id="d8075091" class="cell" data-execution_count="6">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>make_plots.make_stripplot(df, <span class="st">'glide'</span>, <span class="st">'speed'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="flight_numbers_files/figure-html/cell-7-output-1.png" width="585" height="429" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="turn" class="level4">
+<h4 class="anchored" data-anchor-id="turn">Turn</h4>
+<p>On the other hand, perhaps no attribute of a disc is discussed and debated more than Turn and her sister Fade, with their sum generally referred to as Stability.</p>
+<div id="b29e2bc1" class="cell" data-execution_count="7">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>make_plots.make_stripplot(df, <span class="st">'turn'</span>, <span class="st">'fade'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="flight_numbers_files/figure-html/cell-8-output-1.png" width="576" height="429" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>A disc’s flight can be thought of as consisting of two phases; the first is the high spin phase, when the disc is first thrown and has the most kinetic energy, followed by a low spin phase, where the disc begins to lose RPM and succumbs to gravity. ~ Turn describes how a disc behaves during the high spin phase. Considering a typical right handed player throwing a backhand shot on a neutral angle, Turn indicates how much the disc will move tangent to its rotation (clockwise in this example), or simply put, how far right it will drift during its flight.</p>
+<p>From <a href="#fig-corr-plot" class="quarto-xref">Figure&nbsp;1</a> we see that the depth of the rim has the greatest impact on Turn, and perhaps more interestingly, Turn seems to have an inverse relationship with Speed’s correlations, meaning discs with higher speed tend to have less turn.</p>
+</section>
+<section id="fade" class="level4">
+<h4 class="anchored" data-anchor-id="fade">Fade</h4>
+<p>Fade is the equally important opposite of Turn, and describes the second, lower spin phase of the disc’s flight. Given the same right hand backhand throw, a high Fade is intended to describe how the disc will tend to move left and towards the ground.</p>
+<p>As expected, we see an opposite relationship between Turn and Fade, in both directionality and strength, as seen in <a href="#fig-corr-plot" class="quarto-xref">Figure&nbsp;1</a>.</p>
+</section>
+</section>
+<section id="other-considerations" class="level3">
+<h3 class="anchored" data-anchor-id="other-considerations">Other considerations</h3>
+<p>It is important to note that the data used in this analysis was limited to a single manufacturer, Innova. While Innova is the top selling disc golf company today, in addition to being the company that first developed the modern flight number system, these ratings are not standardized for all manufacturers. Significant differences could be observed when applying these same methods to a broader population of molds.</p>
+<p>Additionally, it is well known and accepted that the plastic polymers a disc is made from has significant impacts on a discs characteristics, even those made from the same mold. Environmental conditions, such as altitude and air pressure, can also influence how a disc flies. There are also physical characteristics that are more difficult to measure that are generally considered relevant, such as the “parting line”, or the position between flight plate and rim when the disc is manufactured.</p>
+</section>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>We can clearly observe relationships between physical measurements of a disc and the prescribed flight numbers. The dimensions of the rim are especially important to consider when applying this kind of classification system.</p>
+<p>It is important to note that this analysis says nothing of the actual flight patterns one could expect of a given disc. As mentioned, there are too many factors beyond a disc’s shape and design that can influence the behavior of a disc in flight.</p>
+<p>Without a controlled, standardized testing environment and rating process, the flight number system is unreliable and poorly suited to describe to a consumer how a disc might fly. If the industry and community’s goal is to sysmetically describe discs by their flight patterns, it would be well served to invest in a simulation based approach.</p>
+<section id="additional-information" class="level3">
+<h3 class="anchored" data-anchor-id="additional-information">Additional Information</h3>
+<p><a href="https://www.pdga.com/history">Brief History of Disc Golf and the PDGA</a></p>
+<p><a href="https://www.innovadiscs.com/home/disc-golf-faq/flight-ratings-system/">Innova Flight Ratings System</a></p>
+</section>
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p><a href="https://www.pdga.com/technical-standards/">PDGA Equipment Technical Standards</a><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main>
 <!-- /main column -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {

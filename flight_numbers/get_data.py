@@ -6,8 +6,11 @@ from bs4 import BeautifulSoup
 import tomli
 import re
 from io import StringIO
+import sys
+import os
 
-with open("config.toml", "rb") as f:
+# TODO figure out how to do relative path with Quarto
+with open("/Users/kevinhav/projects/d606_final_project/config.toml", "rb") as f:
     config = tomli.load(f)
 
 
@@ -77,6 +80,17 @@ def clean_innova_data(innova_df) -> DataFrame:
 def clean_pdga_data(pdga_df) -> DataFrame:
 
     pdga_df_clean = pdga_df.rename(columns=lambda x: x.lower().replace(" ", "_"))
+    pdga_df_clean.drop(
+        columns=[
+            "max_weight_(gr)",
+            "max_weight_vint_(gr)",
+            "last_year_production",
+            "class",
+            "certification_number",
+            "approved_date",
+        ],
+        inplace=True,
+    )
 
     return pdga_df_clean
 
@@ -112,3 +126,7 @@ def get_data() -> DataFrame:
     pdga_df = clean_pdga_data(pdga_df)
 
     return create_processed_data(innova_df, pdga_df)
+
+
+if __name__ == "__main__":
+    get_data()

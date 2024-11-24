@@ -19,3 +19,8 @@ def get_x_y(df, x_col, y_col):
 def build_lm(X, y):
 
     return LinearRegression().fit(X, y)
+
+
+def predict_disc_speed(model: LinearRegression, rim_thickness):
+
+    return model.predict(rim_thickness)
