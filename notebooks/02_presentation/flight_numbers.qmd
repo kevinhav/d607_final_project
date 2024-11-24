@@ -11,7 +11,6 @@ execute:
     virutalenv: .venv
 ---
 
-
 ```{python}
 #| include: false
 
@@ -43,7 +42,6 @@ The modern version of the sport has been around for about half a century, and du
 With this sudden trajectory, the disc golf community has found itself flooded with new data, information, and perspectives. In a flood of new money and new players, the community found its current knowledge resources to be insufficient and has been turning to data-driven science to answer its questions.
 
 Directly engaging in this exciting and dynamic time, I'd like to take a data science based approach to review one of the most well-known and yet mysterious frameworks in this sport; the disc golf Flight Rating System.
-
 
 ### Flight numbers and their challenges
 
@@ -105,7 +103,6 @@ From my analysis, the most clear and straightforward relationship across all cha
 sns.scatterplot(df, x='speed', y='rim_thickness_(cm)')
 ```
 
-
 #### Glide
 
 Of all the flight rating categories, the disc golf community finds Glide to be one of the least informative attributes. Glide is intended to indicate how easily a disc will move through the air, but given we are throwing discs and not shot-put, this is an assumed characteristic.
@@ -125,12 +122,10 @@ make_plots.make_stripplot(df, 'turn', 'fade')
 ```
 
 A disc's flight can be thought of as consisting of two phases; the first is the high spin phase, when the disc is first thrown and has the most kinetic energy, followed by a low spin phase, where the disc begins to lose RPM and succumbs to gravity.
-~
+
 Turn describes how a disc behaves during the high spin phase. Considering a typical right handed player throwing a backhand shot on a neutral angle, Turn indicates how much the disc will move tangent to its rotation (clockwise in this example), or simply put, how far right it will drift during its flight.
 
 From @fig-corr-plot we see that the depth of the rim has the greatest impact on Turn, and perhaps more interestingly, Turn seems to have an inverse relationship with Speed's correlations, meaning discs with higher speed tend to have less turn.
-
-
 
 #### Fade
 
@@ -151,7 +146,6 @@ We can clearly observe relationships between physical measurements of a disc and
 It is important to note that this analysis says nothing of the actual flight patterns one could expect of a given disc. As mentioned, there are too many factors beyond a disc's shape and design that can influence the behavior of a disc in flight.
 
 Without a controlled, standardized testing environment and rating process, the flight number system is unreliable and poorly suited to describe to a consumer how a disc might fly. If the industry and community's goal is to sysmetically describe discs by their flight patterns, it would be well served to invest in a simulation based approach.
-
 
 ### Additional Information
 

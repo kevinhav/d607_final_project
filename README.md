@@ -20,11 +20,8 @@ See [flight_numbers.html](notebooks/02_presentation/flight_numbers.html) for ful
 │   ├── processed
 │   └── raw
 ├── docs
-│   ├── pdga-technical-standards_2024-05-08.pdf
-│   └── project_summary.md
 ├── flight_numbers
 │   ├── __init__.py
-│   ├── __pycache__
 │   ├── get_data.py
 │   ├── make_plots.py
 │   └── train_models.py
@@ -44,8 +41,8 @@ See [flight_numbers.html](notebooks/02_presentation/flight_numbers.html) for ful
 
 1. Clone the repository:
 ```bash
-git clone [repository-url]
-cd [project-name]
+git clone https://github.com/kevinhav/d607_final_project
+cd d607_final_project
 ```
 
 2. Create and activate virtual environment:
@@ -76,7 +73,7 @@ pip install -r requirements.txt
 ### Analysis & Modeling
 
 1. Use functions in `train_models.py` to train models
-2. 
+
 
 ## Contact
 
