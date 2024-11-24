@@ -10,7 +10,7 @@ import sys
 import os
 
 # TODO figure out how to do relative path with Quarto
-with open("/Users/kevinhav/projects/d606_final_project/config.toml", "rb") as f:
+with open("config.toml", "rb") as f:
     config = tomli.load(f)
 
 
