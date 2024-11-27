@@ -129,7 +129,7 @@ def get_data() -> DataFrame:
 
 def cache_processed_data(processed_df):
 
-    processed_df.to_csv(Path("data/processed/processed_data.csv"))
+    processed_df.to_csv(Path(f"{config['paths']['processed_data']}/processed_data.csv"))
 
     print("Data successfully written")
 
