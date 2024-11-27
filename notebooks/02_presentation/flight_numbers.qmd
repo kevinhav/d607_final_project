@@ -31,7 +31,7 @@ df = get_data.get_data()
 
 ## Abstract
 
-In this paper I consider the flying discs used in the sport of disc golf, specifically exploring the relationship between their physical characteristics and the way manufacturers market and classify these discs. Using technical specification and manufacturer data, I find strong correlations between the dimensions of a disc's rim to flight numbers.
+In this paper I consider the flying discs used in the sport of disc golf, specifically exploring the relationship between their physical characteristics and the way manufacturers market and classify these discs - by flight numbers. Using technical specification and manufacturer data, I find strong correlations between the dimensions of a disc's rim to flight numbers, but ultimately conclude that consumers would be best served with a more comprehensive system.
 
 ### Introduction to disc golf's current climate
 
@@ -47,7 +47,9 @@ Directly engaging in this exciting and dynamic time, I'd like to take a data sci
 
 One of the unique components to disc golf is its namesake; the discs. Disc golf discs are designed to be thrown much further than your standard Frisbee; elite distance players can throw these discs 600-700+ feet through the air, and even for amateurs, 250' to 400' is not uncommon.
 
-The physics of these discs is very interesting and surprisingly complex; very small differences in the physical attributes, including shape, ratios, and plastic blends of the disc can result in a surprising differences in how two discs fly.
+![An Innova Destroyer disc golf disc](images/innova_destroyer.jpg)
+
+The physics of these discs are interesting and surprisingly complex; very small differences in the physical attributes, including shape, ratios, and plastic blends of the disc can result in a surprising differences in how two discs fly.
 
 One of the original disc golf manufacturers, Innova Disc Golf, invented a system to help try to categorize discs based on these physical attributes, so players could have an idea of how a disc would perform before purchasing. They named this framework the Innova Flight Number System.
 
@@ -58,7 +60,7 @@ This system categorizes discs by four measures, which are represented numericall
 - **Turn**: the gyroscopic stability of the disc at *high* speeds (i.e. how the disc acts when first thrown)
 - **Fade**: the gyroscopic stability of the disc at *low* speeds (i.e. how the disc acts as it finishes its flight)
 
-While this system has been widely adopted by the community and other manufacturers as a standard, with every disc expected to have a set of flight numbers, the system is opaque and surrounded by mystery, with many in the community simply decrying the entire framework, expressing "flight numbers don't matter" as a common idiom.
+While this system has been widely adopted by the community and other manufacturers as a standard, with every disc expected to have a set of flight numbers, the system is opaque and surrounded by mystery, with many in the community expressing frustration in the inconsistency in how discs of similar flight numbers perform.
 
 A combination of player skill levels, differences in how manufacturers apply the flight number system, and even the plastic polymers that the disc is made from result in a wide range of characteristics from similarly classified discs.
 
@@ -68,7 +70,7 @@ In an attempt to shed some light on how these flights numbers may be determined,
 
 As part of the Professional Disc Golf Association (PDGA)'s process, discs are submitted by manufacturers to be approved according to the PDGA's technical specifications[^1]. These specifications are made available by the PDGA for all approved molds, and includes specific standardized measurements which I have compared against the mold's respective flight numbers.
 
-![](images/pdga_disc_specifications.png){fig-alt="Diagram of disc measurements. Source: PDGA Technical Specifications"}
+![Diagram of disc measurements. Source: PDGA Technical Specifications](images/pdga_disc_specifications.png){fig-alt="Diagram of disc measurements. Source: PDGA Technical Specifications"}
 
 Below is the combined data, with flight numbers from Innova and physical measurements from the PDGA.
 
@@ -76,9 +78,9 @@ Below is the combined data, with flight numbers from Innova and physical measure
 df.head()
 ```
 
-In the below correlation matrix, we can see some clear relationships. We'll explore these further in the following section
+In the below correlation matrix, we can see some clear relationships. We'll explore these further in the following section and will refer back to this figure often.
 
-Do note the colinearity between these physical measurements; for example, the size of the rim is highly correlated to inner diameter.
+Do note the colinearity between these physical measurements; for example, the size of the rim is highly correlated to inner diameter. 
 
 ```{python}
 #| label: fig-corr-plot
@@ -100,12 +102,16 @@ make_plots.make_flight_number_hist(df, 'speed')
 From my analysis, the most clear and straightforward relationship across all characteristics is that of Speed and a disc's rim, specifically the thickness and shape. Intuitively this makes sense, as we can think of the rim of a disc as its "wing", which should play a significant part in aerodynamic characteristics.
 
 ```{python}
-sns.scatterplot(df, x='speed', y='rim_thickness_(cm)')
+make_plots.make_scatterplot(df, x='speed', y='rim_thickness_(cm)')
 ```
 
 #### Glide
 
 Of all the flight rating categories, the disc golf community finds Glide to be one of the least informative attributes. Glide is intended to indicate how easily a disc will move through the air, but given we are throwing discs and not shot-put, this is an assumed characteristic.
+
+```{python}
+make_plots.make_flight_number_hist(df, 'glide')
+```
 
 Notably, Glide seems to be highly correlated with Speed. We can see a similar, albeit less convincing, relationships in line with those that we saw for Speed as seen in @fig-corr-plot.
 
@@ -118,12 +124,22 @@ make_plots.make_stripplot(df, 'glide', 'speed')
 On the other hand, perhaps no attribute of a disc is discussed and debated more than Turn and her sister Fade, with their sum generally referred to as Stability.
 
 ```{python}
-make_plots.make_stripplot(df, 'turn', 'fade')
+make_plots.make_flight_number_hist(df, 'turn')
 ```
 
 A disc's flight can be thought of as consisting of two phases; the first is the high spin phase, when the disc is first thrown and has the most kinetic energy, followed by a low spin phase, where the disc begins to lose RPM and succumbs to gravity.
 
-Turn describes how a disc behaves during the high spin phase. Considering a typical right handed player throwing a backhand shot on a neutral angle, Turn indicates how much the disc will move tangent to its rotation (clockwise in this example), or simply put, how far right it will drift during its flight.
+Turn describes the high spin phase, while Fade describes the low.
+
+```{python}
+#| label: fig-turn-fade
+
+make_plots.make_stripplot(df, 'turn', 'fade')
+```
+
+Considering a typical right handed player throwing a backhand shot on a neutral angle, Turn indicates how much the disc will move tangent to its rotation (clockwise in this example), or simply put, how far right it will drift during its flight.
+
+![A set of flight patterns for different discs. Credit to [Infinite Discs](https://blog.infinitediscs.com/flight-numbers-what-they-mean-and-a-better-approach/)](images/flight_pattern.jpg)
 
 From @fig-corr-plot we see that the depth of the rim has the greatest impact on Turn, and perhaps more interestingly, Turn seems to have an inverse relationship with Speed's correlations, meaning discs with higher speed tend to have less turn.
 
@@ -131,7 +147,11 @@ From @fig-corr-plot we see that the depth of the rim has the greatest impact on 
 
 Fade is the equally important opposite of Turn, and describes the second, lower spin phase of the disc's flight. Given the same right hand backhand throw, a high Fade is intended to describe how the disc will tend to move left and towards the ground.
 
-As expected, we see an opposite relationship between Turn and Fade, in both directionality and strength, as seen in @fig-corr-plot.
+```{python}
+make_plots.make_flight_number_hist(df, 'fade')
+```
+
+Interestingly, we can see an opposite relationship between Turn and Fade, in both directionality and strength, when considering physical characteristics as seen in @fig-corr-plot. In contrast, the correlation between these two flight numbers appear to be *positively* related as seen in empirically in @fig-turn-fade. This complexity may contribute to the common confusion around the combined *stability* of a disc.
 
 ### Other considerations
 

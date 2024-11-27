@@ -25,19 +25,29 @@ def make_pair_plot(df):
 
 def make_flight_number_hist(df, flight_number: str):
 
-    return sns.countplot(df, x=flight_number).set_title(
-        f"Distribution of discs by {flight_number.title()}", loc="left"
-    )
+    plt.title(f"Distribution of discs by {flight_number.title()}", loc="left")
+
+    sns.despine()
+
+    return sns.countplot(df, x=flight_number)
 
 
 def make_scatterplot(df, x, y):
 
-    return sns.scatterplot(data=df, x=x, y=y)
+    plt.title(f"{x.title()} vs. {y}", loc="left")
+
+    sns.despine()
+
+    return sns.regplot(data=df, x=x, y=y)
 
 
 def make_stripplot(df, x, y):
 
-    return sns.stripplot(data=df, x=x, y=y)
+    plt.title(f"{x.title()} vs. {y}", loc="left")
+
+    sns.despine()
+
+    return sns.regplot(data=df, x=x, y=y, x_jitter=True, y_jitter=True)
 
 
 def make_correlation_matrix(df):
@@ -50,6 +60,8 @@ def make_correlation_matrix(df):
 def make_correlation_plot(corr_matrix):
 
     plt.title("Flight Numbers and their Physical Characteristics", loc="left")
+
+    sns.despine()
 
     return sns.heatmap(
         data=corr_matrix,
