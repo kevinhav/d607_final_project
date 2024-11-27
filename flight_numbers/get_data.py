@@ -113,11 +113,6 @@ def create_processed_data(innova_df: DataFrame, pdga_df: DataFrame) -> DataFrame
     return df
 
 
-def cache_processed_data():
-    # TODO feather or parquet?
-    ...
-
-
 def get_data() -> DataFrame:
     """
     Returns processed and combined Innova and PDGA data
@@ -130,6 +125,15 @@ def get_data() -> DataFrame:
     pdga_df = clean_pdga_data(pdga_df)
 
     return create_processed_data(innova_df, pdga_df)
+
+
+def cache_processed_data(processed_df):
+
+    processed_df.to_csv(Path("data/processed/processed_data.csv"))
+
+    print("Data successfully written")
+
+    return None
 
 
 if __name__ == "__main__":
