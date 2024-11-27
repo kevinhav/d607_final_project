@@ -15,6 +15,8 @@ See [flight_numbers.html](notebooks/02_presentation/flight_numbers.html) for ful
 ├── README.md
 ├── _quarto.yml
 ├── config.toml
+├── requirements.txt
+├── LICENSE
 ├── data
 │   ├── interim
 │   ├── processed
@@ -73,7 +75,6 @@ pip install -r requirements.txt
 ### Analysis & Modeling
 
 1. Use functions in `train_models.py` to train models
-
 
 ## Contact
 
