@@ -8,6 +8,8 @@ In this paper I consider the flying discs used in the sport of disc golf, specif
 
 See [flight_numbers.html](notebooks/02_presentation/flight_numbers.html) for full analysis.
 
+Additionally, there are some nascent model experiments in the [notebooks](notebooks/01_exploration/) if they are of any interest.
+
 ## Project Structure
 
 ```
