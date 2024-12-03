@@ -1,0 +1,215 @@
+---
+title: "Flight Numbers: An analysis of the disc golf flight number system"
+author: "Kevin Havis"
+format: 
+    revealjs:
+        smaller: true
+        theme: moon
+jupyter: python3
+execute: 
+  env:
+    PYTHONPATH: "../flight_numbers:${PYTHONPATH}"
+    virutalenv: .venv
+---
+
+```{python}
+#| include: false
+
+# See https://github.com/kevinhav/d607_final_project/tree/main/flight_numbers for full code
+
+import sys
+import os
+
+# Add the root directory to sys.path
+# TODO figure out how to use relative path with Quarto
+sys.path.append('/Users/kevinhav/projects/d606_final_project')
+
+from flight_numbers import get_data, make_plots
+import seaborn as sns
+
+df = get_data.get_data()
+```
+
+## Abstract
+
+In this paper I consider the flying discs used in the sport of disc golf, specifically exploring the relationship between their physical characteristics and the way manufacturers market and classify these discs - by flight numbers. Using technical specification and manufacturer data, I find strong correlations between the dimensions of a disc's rim to flight numbers, but ultimately conclude that consumers would be best served with a more comprehensive system.
+
+## Introduction to disc golf's current climate
+
+::: {.notes}
+- Disc golf is similar to golf, but instead of clubs and balls, we just use discs
+- We have the same scoring rules, concepts such as part, etc.
+:::
+
+- Disc golf is a relatively new sport that has experienced an explosive growth trajectory in the past couple of decades
+- COVID 19 pandemic introduced many people to the sport due to ease of access, affordability, and low contact
+- The sudden influx of new players has also brought new questions, and the industry and community have been turning to data driven science to answer them
+  
+## Why is this interesting?
+
+::: {.notes}
+- Disc golf is a sport developing in the same age as modern machine learning
+- We have a unique opporunity to see a new sport develop with data and technology to support it readily available
+- Very little "conventional wisdom"; we want answers and we want it from data
+:::
+
+- We can see new, unique sports science and experimentation emerge and rapidly evolve
+- Lots of interesting questions and behaviors in the physics of a discs flight
+- Great examples of applied data science solving real problems
+
+## Flight numbers and their challenges
+
+::: {.notes}
+- These discs are similar yet different from a Frisbee
+- We use ratings similar to how golf clubs are labeled (e.g. 9 iron), but we lack the specifics associated with them such as loft
+- (go to simulator) I'd rather show than tell
+:::
+
+![An Innova Destroyer disc golf disc](images/innova_destroyer.jpg)
+
+- **Speed**: how fast the disc must be thrown in order to fly as the manufacturer intended
+- **Glide**: how easily the disc is expected to move through the air
+- **Turn**: the gyroscopic stability of the disc at *high* speeds (i.e. how the disc acts when first thrown)
+- **Fade**: the gyroscopic stability of the disc at *low* speeds (i.e. how the disc acts as it finishes its flight)
+
+## Comparing the flight number system to physical disc characteristics
+
+![Diagram of disc measurements. Source: PDGA Technical Specifications](images/pdga_disc_specifications.png){fig-align="center"}
+
+## The data
+
+```{python}
+df.head()
+```
+
+
+## Correlation Matrix
+
+```{python}
+#| label: fig-corr-plot
+#| fig-cap: "Disc correlation "
+
+corr_matrix = make_plots.make_correlation_matrix(df)
+
+make_plots.make_correlation_plot(corr_matrix)
+```
+
+## Speed
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{python}
+make_plots.make_flight_number_hist(df, 'speed')
+```
+
+:::
+
+::: {.column width="50%"}
+
+```{python}
+make_plots.make_scatterplot(df, x='speed', y='rim_thickness_(cm)')
+```
+
+:::
+
+::::
+
+## Glide
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{python}
+make_plots.make_flight_number_hist(df, 'glide')
+```
+
+:::
+
+::: {.column widht="50%"}
+
+```{python}
+make_plots.make_stripplot(df, 'glide', 'speed')
+```
+
+:::
+
+::::
+
+## How a disc flies
+
+![A set of flight patterns for different discs. Credit to [Infinite Discs](https://blog.infinitediscs.com/flight-numbers-what-they-mean-and-a-better-approach/)](images/flight_pattern.jpg)
+
+## Turn
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{python}
+make_plots.make_flight_number_hist(df, 'turn')
+```
+
+:::
+
+::: {.column width="50%"}
+
+```{python}
+#| label: fig-turn-fade
+
+make_plots.make_stripplot(df, 'turn', 'fade')
+```
+
+:::
+
+::::
+
+
+## Fade
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{python}
+make_plots.make_flight_number_hist(df, 'fade')
+```
+
+:::
+
+::: {.column width="50%"}
+
+
+
+:::
+
+::::
+
+## A sport led by data science
+
+- [TryDiscs](https://trydiscs.com/explore?&m=Streamline&d=Drift)
+- [TechDisc](https://shop.techdisc.com/)
+- [UDisc Ratings](https://udisc.com/blog/post/udisc-round-ratings)
+- [Immonen, E. Optimal design for disc golf by computational fluid dynamics and machine learning. Struct Multidisc Optim 65, 12 (2022)](https://link.springer.com/article/10.1007/s00158-021-03107-7)
+
+
+## Conclusion
+
+- Physical characteristics and flight numbers are correlated
+- Flight numbers do not necessarily correspond to flight patterns
+- Much more data is needed to reliable describe flight patterns
+- Other approaches
+  - Simulation based (TechDisc)
+  - Crowd sourced flight ratings (Infinite Discs)
+  - Controlled experiments (StuffMadeHere)
+  - Reinforcement learning (Sketches for Humanity)
+
+### Additional Information
+
+[Brief History of Disc Golf and the PDGA](https://www.pdga.com/history)
+
+[Innova Flight Ratings System](https://www.innovadiscs.com/home/disc-golf-faq/flight-ratings-system/)
+
+[^1]:[PDGA Equipment Technical Standards](https://www.pdga.com/technical-standards/)
