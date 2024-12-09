@@ -3,7 +3,6 @@ title: "Flight Numbers: An analysis of the disc golf flight number system"
 author: "Kevin Havis"
 format: 
     revealjs:
-        smaller: true
         theme: moon
 jupyter: python3
 execute: 
@@ -19,6 +18,7 @@ execute:
 
 import sys
 import os
+from IPython.core.display import HTML
 
 # Add the root directory to sys.path
 # TODO figure out how to use relative path with Quarto
@@ -57,7 +57,7 @@ In this paper I consider the flying discs used in the sport of disc golf, specif
 - Lots of interesting questions and behaviors in the physics of a discs flight
 - Great examples of applied data science solving real problems
 
-## Flight numbers and their challenges
+## Flight numbers and their challenges {.smaller}
 
 ::: {.notes}
 - These discs are similar yet different from a Frisbee
@@ -67,23 +67,54 @@ In this paper I consider the flying discs used in the sport of disc golf, specif
 
 ![An Innova Destroyer disc golf disc](images/innova_destroyer.jpg)
 
+::: {.fragment}
 - **Speed**: how fast the disc must be thrown in order to fly as the manufacturer intended
+:::
+
+::: {.fragment}
 - **Glide**: how easily the disc is expected to move through the air
+:::
+
+::: {.fragment}
 - **Turn**: the gyroscopic stability of the disc at *high* speeds (i.e. how the disc acts when first thrown)
+:::
+
+::: {.fragment}
 - **Fade**: the gyroscopic stability of the disc at *low* speeds (i.e. how the disc acts as it finishes its flight)
+:::
+
+## Our objective
+
+::: r-fit-text
+Can we use modeling to predict flight numbers based on the shape of a disc?
+:::
 
 ## Comparing the flight number system to physical disc characteristics
 
 ![Diagram of disc measurements. Source: PDGA Technical Specifications](images/pdga_disc_specifications.png){fig-align="center"}
 
-## The data
+## The data {.smaller}
+
+::: {.notes}
+- The PDGA provides disc measurements
+- We had to scrape flight numbers from Innova website
+- There are other manufacturers but we are focusing just on Innova
+:::
 
 ```{python}
-df.head()
+#| fig-cap: "Data sourced from PDGA and Innova Discs website"
+html_table = df.head(10).to_html()
+HTML(html_table)
 ```
 
 
 ## Correlation Matrix
+
+::: {.notes}
+- We can see some immediate trends
+- Note very high correlations
+- Note opposite correlations
+:::
 
 ```{python}
 #| label: fig-corr-plot
@@ -128,7 +159,7 @@ make_plots.make_flight_number_hist(df, 'glide')
 
 :::
 
-::: {.column widht="50%"}
+::: {.column width="50%"}
 
 ```{python}
 make_plots.make_stripplot(df, 'glide', 'speed')
@@ -181,7 +212,9 @@ make_plots.make_flight_number_hist(df, 'fade')
 
 ::: {.column width="50%"}
 
-
+```{python}
+make_plots.make_stripplot(df, 'fade', 'rim_thickness_(cm)')
+```
 
 :::
 
@@ -195,11 +228,11 @@ make_plots.make_flight_number_hist(df, 'fade')
 - [Immonen, E. Optimal design for disc golf by computational fluid dynamics and machine learning. Struct Multidisc Optim 65, 12 (2022)](https://link.springer.com/article/10.1007/s00158-021-03107-7)
 
 
-## Conclusion
+## Conclusion {.smaller}
 
-- Physical characteristics and flight numbers are correlated
-- Flight numbers do not necessarily correspond to flight patterns
-- Much more data is needed to reliable describe flight patterns
+- Physical characteristics and flight numbers are correlated and predictable, particularly Speed
+- Flight *numbers* do not necessarily correspond to flight *patterns*
+- Much more data is needed to reliably describe flight patterns
 - Other approaches
   - Simulation based (TechDisc)
   - Crowd sourced flight ratings (Infinite Discs)

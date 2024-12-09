@@ -8,7 +8,7 @@ from io import StringIO
 
 # Replace this per your directory
 # Needed to let Quatro render .qmd correctly
-CONFIG_PATH = "/Users/kevinhav/projects/d606_final_project/config.toml"
+CONFIG_PATH = r"C:\Users\Kevin\projects\d607_final_project\config.toml"
 
 # TODO figure out how to do relative path with Quarto
 with open(CONFIG_PATH, "rb") as f:
