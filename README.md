@@ -1,4 +1,4 @@
-# Data Analysis Project
+# Flight Numbers
 
 This repository contains code and analysis for exploring disc golf flight numbers and their relationship to physical characteristics of a disc
 
